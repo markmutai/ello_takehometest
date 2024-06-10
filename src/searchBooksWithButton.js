@@ -23,7 +23,8 @@ const SearchBooks = () => {
     const [searchTerm, setSearchTerm] = useState('');
     const { loading, error, data } = useQuery(BOOKS_QUERY);
     const [selectedBooks, setSelectedBooks] = useState([]);
-    const [openPopup, setOpenPopup] = useState(false);
+    const [openPopup, setOpenPopup] = useState(true);
+    const [showResults, setShowResults] = useState(false);
     const selectedBooksRef = useRef(null);
 
     useEffect(() => {
@@ -63,10 +64,19 @@ const SearchBooks = () => {
     const scrollToSelectedBooks = () => {
         if (selectedBooksRef.current) {
             setOpenPopup(false);
-            selectedBooksRef.current.scrollIntoView({
-                behavior: 'smooth',
-                block: 'start'
-            });
+            const offset = -10; // Offset value
+            const scrollToPosition = selectedBooksRef.current.offsetTop + offset;
+            window.scrollTo({ top: scrollToPosition, behavior: 'smooth' });
+        }
+    };
+
+    const handleSearch = () => {
+        setShowResults(true);
+    };
+
+    const handleKeyPress = (e) => {
+        if (e.key === 'Enter') {
+            handleSearch();
         }
     };
 
@@ -118,6 +128,7 @@ const SearchBooks = () => {
                                 placeholder="Search for book or author"
                                 value={searchTerm}
                                 onChange={(e) => setSearchTerm(e.target.value)}
+                                onKeyPress={handleKeyPress}
                                 InputProps={{
                                     disableUnderline: true,
                                     startAdornment: (
@@ -151,6 +162,7 @@ const SearchBooks = () => {
                                     color: '#fff',
                                     borderRadius: '40px',
                                 }}
+                                onClick={handleSearch}
                                 className='btnStyle'
                             >
                                 Search
@@ -167,7 +179,7 @@ const SearchBooks = () => {
                         <p>
                             Error: {error.message}
                         </p>}
-                    {searchTerm && !loading && !error && filteredBooks.length === 0 && (
+                    {showResults && searchTerm && !loading && !error && filteredBooks.length === 0 && (
                         <p
                             style={{
                                 textAlign: 'center',
@@ -223,7 +235,6 @@ const SearchBooks = () => {
                                             className='addRemoveBtn removeBtn'
 
                                         >
-                                            {/* <AiOutlineMinus /> */}
                                             <p className='addRemoveTxt removeTxtSelected'
                                                 style={{
                                                     marginTop: '20px',
@@ -242,7 +253,7 @@ const SearchBooks = () => {
                         </Grid>
                     </Box>
                 </Grid>
-                {!loading && !error && filteredBooks.length > 0 && (
+                {showResults && !loading && !error && filteredBooks.length > 0 && (
                     <div>
                         <Grid container
                             spacing={2}

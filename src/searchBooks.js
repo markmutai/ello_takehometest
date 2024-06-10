@@ -25,7 +25,7 @@ const SearchBooks = () => {
     const [searchTerm, setSearchTerm] = useState('');
     const { loading, error, data } = useQuery(BOOKS_QUERY);
     const [selectedBooks, setSelectedBooks] = useState([]);
-    const [openPopup, setOpenPopup] = useState(false);
+    const [openPopup, setOpenPopup] = useState(true);
     const selectedBooksRef = useRef(null);
 
     useEffect(() => {
