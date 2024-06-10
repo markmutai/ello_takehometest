@@ -1,0 +1,374 @@
+/* REM_converter--------------------------------------------------------------------------------------------*/
+@use 'sass:math';
+@function rem($pxValue) {
+    @return math.div($pxValue, 16px) * 1rem;
+}
+
+
+/* Google_Fonts--------------------------------------------------------------------------------------------*/
+@import url("https://fonts.googleapis.com/css2?family=Mulish:wght@500;600;700;800&display=swap");
+@import url('https://fonts.googleapis.com/css2?family=Indie+Flower&display=swap');
+
+
+/* Universal--------------------------------------------------------------------------------------------*/
+
+body{
+    font-family: "Mulish", sans-serif;
+    // background: linear-gradient(hsla(0, 0%, 85%, 1) 40%, hsla(0, 0%, 95%, 1) 80%);
+    background-color: hsla(0, 0%, 100%, 1);
+}
+
+.navStyleItem{
+    font-family: "Mulish", sans-serif !important;
+    font-size: rem(13px) !important;
+    border-radius: 0 !important;
+    border-bottom:2px solid hsla(0, 0%, 0%, 0) !important;
+}
+
+.navStyleItem:hover{
+    border-bottom:2px solid #5ACCCC !important;
+}
+
+.active{
+    font-weight: 800 !important;
+    border-bottom:2px solid #5ACCCC !important;
+}
+
+
+/* Search_Box--------------------------------------------------------------------------------------------*/
+
+.searchContainer{
+    width: 50% !important;
+}
+
+input,
+input::placeholder{
+    font-family: "Mulish", sans-serif !important;
+    font-size: rem(15px);
+}
+
+input{
+    background-color: hsla(0,50%,100%,0.9);
+    padding: 10px 20px !important;
+    border-radius: 30px;
+}
+
+input::placeholder{
+    color:hsla(0, 0%, 0%, 1) !important;
+}
+
+.loadingTxt{
+    font-size: rem(11px);
+    text-align: center;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+}
+
+.btnStyle{
+    font-family: "Mulish", sans-serif !important;
+    font-size: rem(14px) !important;
+    font-weight: 800 !important;
+    transition: all 300ms ease-in-out;
+}
+
+.btnStyle:hover{
+    background-color: #335C6E !important;
+    transition: all 300ms ease-in-out;
+}
+
+
+/* Video_Hero--------------------------------------------------------------------------------------------*/
+.videoFx::after{
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    height: 100%;
+    width: 100%;
+    background: linear-gradient(hsla(0, 0%, 100%, 0) 55%, hsla(0, 0%, 100%, 1) 100%);
+    z-index: 9999;
+}
+
+
+/* Book_List--------------------------------------------------------------------------------------------*/
+.boxStyling{
+    backdrop-filter: blur(5px);
+    background: linear-gradient(hsla(0, 0%, 85%, 0.5) 40%, hsla(0, 0%, 100%, 1) 80%);
+}
+
+.appTitle,
+.loadingTxt{
+    color: #5ACCCC;
+}
+
+.bookTitle,
+.authorTxt{
+    color:#335C6E;
+}
+
+.appTitle{
+    font-family: "Indie Flower", cursive;
+    font-size: rem(22px);
+    text-align: center;
+    text-transform: uppercase;
+}
+
+.bookTitle{
+    position: relative;
+    font-size: rem(17px);
+    font-weight: 800;
+    border-bottom: 5px dotted hsla(41.61, 95.22%, 59.02%,0.4);
+    align-content: center;
+    height: 80px;
+    margin-bottom: 20px;
+}
+
+.authorTxt{
+    font-size: rem(15px);
+    font-weight: 600;
+}
+
+.readingLvlTxt{
+    font-size: rem(13px);
+    color:#4AA088;
+}
+
+.viewSelectedBtn{
+    font-family: "Mulish", sans-serif !important;
+    font-weight: 800;
+    font-size: rem(12px);
+    color:#335C6E;
+    text-transform: uppercase;
+    margin-top: rem(15px);
+    height: rem(60px);
+    border: none;
+    background: none;
+    cursor: pointer;
+}
+
+.addRemoveBtn{
+    display: flex;
+    align-content: center;
+    justify-content: center;
+    width: 100%;
+    cursor: pointer;
+}
+
+.viewSelectBtnBox{
+    font-family: "Mulish", sans-serif !important;
+    font-size: rem(12px);
+    font-weight: 800;
+    background-color:#5ACCCC;
+    color:#fff;
+    text-transform: uppercase;
+    width: 100%;
+    height: rem(60px);
+    border: none;
+    border-radius: 0 0 4px 4px;
+    cursor: pointer;
+    transition: all 300ms ease-in-out;
+}
+
+.viewSelectBtnBox:hover{
+    background-color: hsla(198, 37%, 32%, 1);
+    transition: all 300ms ease-in-out;
+}
+
+.selectedBooksWrapper{
+    position: relative;
+    top: 0;
+    z-index: 9999;
+}
+
+.selectedOpen{
+    display: block;
+    max-height: rem(300px);
+    overflow-y: auto;
+    padding: 0px 30px;
+    margin: 0 auto 10px;
+    background-color: hsla(0, 50%, 100%, 1);
+    border: 2px solid hsla(0, 0%, 100%, 1);
+    border-radius: 5px;
+    z-index: 9999;
+}
+
+.selectedClose{
+    visibility: hidden;
+    display: hidden;
+    position: relative;
+    max-height: rem(0px);
+    overflow-y: auto;
+}
+
+.caretWrapper{
+    color:#335C6E;
+    margin-top: 5px;
+}
+
+.caretIcon{
+    font-size: rem(20px);
+}
+
+.caretOpen{
+    transform: rotate(180deg);
+    transition: all 500ms ease-in-out;
+}
+
+.caretClose{
+    transform: rotate(0deg);
+    transition: all 500ms ease-in-out;
+}
+
+.addRemoveWrapper{
+    display: flex;
+    align-content: center;
+    justify-content: center;
+    transition: all 300ms ease-in-out;
+}
+
+.addBox,
+.removeBox{
+    border-radius: 4px 4px 0 0;
+}
+
+.addBox{
+    display: flex;
+    align-content: center;
+    justify-content: center;
+    background: hsla(90, 80%, 35%, 0);
+    border: 1px solid hsla(90, 80%, 35%, 0.2);
+    color: hsla(90, 80%, 35%, 1);
+    margin-top: rem(20px);
+    width: 100%;
+    transition: all 300ms ease-in-out;
+}
+
+.addBox:hover{
+    background: hsla(90, 80%, 35%, 1);
+    color: #fff;
+    transition: all 300ms ease-in-out;
+}
+
+.removeBox{
+    display: flex;
+    align-content: center;
+    justify-content: center;
+    background: hsla(0, 80%, 42%, 1);
+    border: 1px solid hsla(0, 80%, 42%, 0.2);
+    color: #fff;
+    margin-top: rem(20px);
+    width: 100%;
+    transition: all 300ms ease-in-out;
+}
+
+.removeBox:hover{
+    background: hsla(0, 100%, 30%, 1);
+    transition: all 300ms ease-in-out;
+}
+
+.addRemoveTxt{
+    font-family: "Mulish", sans-serif !important;
+    font-size: rem(12px);
+    font-weight: 800;
+    text-transform: uppercase;
+    padding: 10px 0;
+}
+
+.removeTxtSelected{
+    padding: 10px 20px;
+}
+
+.footerTxt{
+    font-size: rem(13px);
+}
+
+.footerCopyTxt{
+    font-size: rem(12px);
+}
+
+
+
+/* Responsive--------------------------------------------------------------------------------------------*/
+@media only screen and (max-width: 1280px) {
+    .searchContainer{
+        width: 60% !important;
+    }
+
+    .viewSelectedBtn{
+        font-size: rem(12px);
+        margin-top: rem(15px);
+        height: rem(60px);
+    }
+}
+
+
+@media only screen and (max-width: 800px) {
+    .searchContainer{
+        width: 75% !important;
+    }
+}
+
+
+@media only screen and (max-width: 600px) {
+    .searchContainer{
+        width: 85% !important;
+    }
+
+    input,
+    input::placeholder{
+        font-size: rem(13px);
+    }
+
+    .navStyleItem{
+        font-size: rem(11px) !important;
+    }
+
+    .appTitle{
+        font-size: rem(20px);
+    }
+
+    .btnStyle{
+        font-size: rem(12px) !important;
+    }
+
+    .viewSelectedBtn{
+        font-size: rem(11px);
+        margin-top: rem(15px);
+        height: rem(60px);
+    }
+    
+    .bookTitle{
+        font-size: rem(15px);
+        height: 60px;
+        margin-bottom: 10px;
+    }
+    
+    .authorTxt{
+        font-size: rem(14px);
+    }
+    
+    .readingLvlTxt{
+        font-size: rem(12px);
+        color:#4AA088;
+    }
+
+
+    .footerTxt{
+        font-size: rem(13px);
+    }
+    
+    .footerCopyTxt{
+        font-size: rem(11px);
+    }
+  }
+
+
+  @media only screen and (max-width: 400px) {
+    .navStyleItem{
+        font-size: rem(10px) !important;
+    }
+
+    .searchContainer{
+        width: 90% !important;
+    }
+  }
