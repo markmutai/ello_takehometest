@@ -11,7 +11,6 @@ Tablet Screen
 
 Mobile Screen
 ![6 - Ello-Book-Search xs](https://github.com/markmutai/ello_takehometest/assets/65723770/f8b038c7-5a11-47f0-a040-da7e56d6e113)
-![7 - Ello-Book-Search xs](https://github.com/markmutai/ello_takehometest/assets/65723770/3d9c
+![7 - Ello-Book-Search xs](https://github.com/markmutai/ello_takehometest/assets/65723770/3d9cea44-ced9-4862-90cf-9b6fad5893b2)
 ![8 - Ello-Book-Search xs](https://github.com/markmutai/ello_takehometest/assets/65723770/73cf7367-95ce-4e9e-84ca-61099adab33a)
-ea44-ced9-4862-90cf-9b6fad5893b2)
 ![9 - Ello-Book-Search xs](https://github.com/markmutai/ello_takehometest/assets/65723770/1f961aee-4dd9-4f38-9d8b-5c10acac891a)
