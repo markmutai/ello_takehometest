@@ -3,7 +3,7 @@ import './assets/dist/css/style.min.css';
 import { ApolloProvider } from '@apollo/client';
 import client from './apolloClient';
 import SearchBooks from './searchBooks';
-import SearchBooksWithButton from './searchBooksWithButton';
+// import SearchBooksWithButton from './searchBooksWithButton';
 import { Box } from "@mui/material";
 import Grid from '@material-ui/core/Grid';
 import Nav from './nav';
@@ -57,7 +57,6 @@ const App = () => (
           <Nav />
           <Routes>
             <Route exact path="/" element={<SearchBooks />} />
-            <Route path="/searchBooksWithButton" element={<SearchBooksWithButton />} />
           </Routes>
         </div>
       </BrowserRouter>

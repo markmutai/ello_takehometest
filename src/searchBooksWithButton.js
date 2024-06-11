@@ -1,7 +1,7 @@
 import React, { useEffect, useRef, useState } from 'react';
 import { useQuery, gql, ApolloProvider } from '@apollo/client';
 import client from './apolloClient';
-import { Button, TextField, InputAdornment } from '@mui/material';
+import { Button, TextField, InputAdornment, List, ListItem, ListItemText, Paper } from '@mui/material';
 import Grid from '@material-ui/core/Grid';
 import { Box } from "@mui/material";
 import { PiCaretDownDuotone } from "react-icons/pi";
@@ -19,13 +19,16 @@ const BOOKS_QUERY = gql`
   }
 `;
 
-const SearchBooks = () => {
+const SearchBooksWithButton = () => {
     const [searchTerm, setSearchTerm] = useState('');
     const { loading, error, data } = useQuery(BOOKS_QUERY);
     const [selectedBooks, setSelectedBooks] = useState([]);
     const [openPopup, setOpenPopup] = useState(true);
     const [showResults, setShowResults] = useState(false);
+    const [liveSearch, setLiveSearch] = useState(false);
+    const [filteredBooks, setFilteredBooks] = useState([]);
     const selectedBooksRef = useRef(null);
+    const liveSearchRef = useRef(null);
 
     useEffect(() => {
         const storedSelectedBooks = JSON.parse(localStorage.getItem('selectedBooks'));
@@ -36,10 +39,15 @@ const SearchBooks = () => {
         }
     }, []);
 
-    const filteredBooks = data?.books?.filter((book) =>
-        book.title.toLowerCase().includes(searchTerm.toLowerCase()) ||
-        book.author.toLowerCase().includes(searchTerm.toLowerCase())
-    );
+    useEffect(() => {
+        if (data) {
+            const results = data.books.filter((book) =>
+                book.title.toLowerCase().includes(searchTerm.toLowerCase()) ||
+                book.author.toLowerCase().includes(searchTerm.toLowerCase())
+            );
+            setFilteredBooks(results);
+        }
+    }, [searchTerm, data]);
 
     const addToSelectedBooks = (book) => {
         setSelectedBooks((prevSelectedBooks) => {
@@ -70,6 +78,20 @@ const SearchBooks = () => {
         }
     };
 
+    useEffect(() => {
+        const handleClickOutside = (event) => {
+            if (liveSearchRef.current && !liveSearchRef.current.contains(event.target)) {
+                setLiveSearch(false);
+            }
+        };
+
+        document.addEventListener("mousedown", handleClickOutside);
+
+        return () => {
+            document.removeEventListener("mousedown", handleClickOutside);
+        };
+    }, []);
+
     const handleSearch = () => {
         setShowResults(true);
     };
@@ -78,6 +100,12 @@ const SearchBooks = () => {
         if (e.key === 'Enter') {
             handleSearch();
         }
+    };
+
+    const handleListItemClick = (book) => {
+        setSearchTerm(book.title);
+        handleSearch();
+        setLiveSearch(false)
     };
 
     return (
@@ -129,13 +157,16 @@ const SearchBooks = () => {
                                 value={searchTerm}
                                 onChange={(e) => setSearchTerm(e.target.value)}
                                 onKeyPress={handleKeyPress}
+                                onClick={() => {
+                                    setLiveSearch(true)
+                                }}
                                 InputProps={{
                                     disableUnderline: true,
                                     startAdornment: (
                                         <InputAdornment position="end">
                                             <RiSearch2Line style={{
                                                 position: 'absolute',
-                                                right: 15,
+                                                // right: 15,
                                                 color: '#5ACCCC',
                                                 fontSize: '24px'
                                             }} />
@@ -150,6 +181,26 @@ const SearchBooks = () => {
                                     borderRadius: '40px',
                                 }}
                             />
+                            {searchTerm && filteredBooks.length > 0 && (
+                                <div
+                                    ref={liveSearchRef}
+                                    className={`searchResultsWrapper ${liveSearch ? 'searchResultsOn' : 'searchResultsOff'}`}
+                                >
+                                    <div
+                                        className='searchResults'
+                                    >
+                                        <List>
+                                            {filteredBooks.map((book, index) => (
+                                                <ListItem key={index} button onClick={() => handleListItemClick(book)}>
+                                                    <ListItemText
+                                                        className='searchResultsTxt'
+                                                        primary={book.title} secondary={book.author} />
+                                                </ListItem>
+                                            ))}
+                                        </List>
+                                    </div>
+                                </div>
+                            )}
                         </Grid>
                         <Grid item xs={12}>
                             <Button
@@ -307,14 +358,13 @@ const SearchBooks = () => {
                                                 >{book.readingLevel}</strong>
                                             </p>
                                             <div className='addRemoveWrapper'>
-                                                {selectedBooks.find((selectedBook) => selectedBook.title === book.title) ? (
+                                                {selectedBooks.find((selectedBook) => selectedBook.title === book.title && selectedBook.author === book.author) ? (
                                                     <div className='removeBox'>
                                                         <Box
                                                             aria-label="Remove from list"
                                                             onClick={() => removeFromSelectedBooks(book.title)}
                                                             className='addRemoveBtn removeBtn'
                                                         >
-
                                                             <p className='addRemoveTxt'>
                                                                 <AiOutlineMinus
                                                                     style={{
@@ -332,7 +382,6 @@ const SearchBooks = () => {
                                                             onClick={() => addToSelectedBooks(book)}
                                                             className='addRemoveBtn addBtn'
                                                         >
-
                                                             <p className='addRemoveTxt'>
                                                                 <AiOutlinePlus
                                                                     style={{
@@ -345,6 +394,7 @@ const SearchBooks = () => {
                                                     </div>
                                                 )}
                                             </div>
+
                                             <button
                                                 className='viewSelectBtnBox'
                                                 onClick={scrollToSelectedBooks}
@@ -363,4 +413,4 @@ const SearchBooks = () => {
     );
 };
 
-export default SearchBooks;
+export default SearchBooksWithButton;

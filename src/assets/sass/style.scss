@@ -38,7 +38,9 @@ body{
 /* Search_Box--------------------------------------------------------------------------------------------*/
 
 .searchContainer{
-    width: 50% !important;
+    width: 40% !important;
+    // background-color: red;
+    margin: 0 auto !important;
 }
 
 input,
@@ -74,6 +76,44 @@ input::placeholder{
 .btnStyle:hover{
     background-color: #335C6E !important;
     transition: all 300ms ease-in-out;
+}
+
+.searchResultsOn{
+    display:block;
+}
+
+.searchResultsOff{
+    display: none;
+}
+
+.searchResultsWrapper{
+    // display: hidden;
+    position: relative;
+    z-index: 9999 !important;
+    font-family: "Mulish", sans-serif !important;
+    margin: 15px auto 0 !important;
+}
+
+.searchResults{
+    position: absolute;
+    background: #fff;
+    border: 2px solid hsla(180, 53%, 58%,0.25);
+    border-radius: 4px;
+    box-shadow: 0 12px 24px hsla(0, 0%, 0%, 0.15);
+    overflow: auto;
+    width: 100%;
+    max-height: rem(300px);
+    
+}
+
+.searchResultsTxt .MuiListItemText-primary {
+    font-family: "Mulish", sans-serif !important;
+    font-weight: bold;
+}
+  
+.searchResultsTxt .MuiListItemText-secondary {
+    font-family: "Mulish", sans-serif !important;
+    color: #666;
 }
 
 
@@ -115,7 +155,7 @@ input::placeholder{
 
 .bookTitle{
     position: relative;
-    font-size: rem(17px);
+    font-size: rem(16px);
     font-weight: 800;
     border-bottom: 5px dotted hsla(41.61, 95.22%, 59.02%,0.4);
     align-content: center;
@@ -146,13 +186,11 @@ input::placeholder{
     cursor: pointer;
 }
 
-.addRemoveBtn{
-    display: flex;
-    align-content: center;
-    justify-content: center;
-    width: 100%;
-    cursor: pointer;
+.viewSelectedBtn:hover{
+    color: #5ACCCC;
+    transition: all 300ms ease-in-out;
 }
+
 
 .viewSelectBtnBox{
     font-family: "Mulish", sans-serif !important;
@@ -163,8 +201,9 @@ input::placeholder{
     text-transform: uppercase;
     width: 100%;
     height: rem(60px);
+    margin-top: rem(4px);
     border: none;
-    border-radius: 0 0 4px 4px;
+    border-radius: 0 0 6px 6px;
     cursor: pointer;
     transition: all 300ms ease-in-out;
 }
@@ -176,20 +215,52 @@ input::placeholder{
 
 .selectedBooksWrapper{
     position: relative;
-    top: 0;
-    z-index: 9999;
+    border-bottom: 2px solid hsla(0, 0%, 0%, 0.1);
+    padding-bottom: 0px;
+    width: 100%;
+    margin: 0 auto !important;
+    // background-color: #335C6E;
+    // z-index: 9999;
+}
+
+.selectedBooksPaddingOn{
+    padding-bottom: 40px;
+}
+
+.selectedBooksPaddingOff{
+    padding-bottom: 0;
+}
+
+.selectedListWidth{
+    width: 90% !important;
+}
+
+.selectedBooksList{
+    display: flex;
+    flex-direction: column;
+    align-content: center;
+    justify-content: center;
+    // padding: 0 0;
+}
+
+.selectedImg{
+    width: rem(240px);
+    // margin: 0 15px 0 0;
 }
 
 .selectedOpen{
     display: block;
-    max-height: rem(300px);
+    width: 100%;
+    // max-height: rem(400px);
     overflow-y: auto;
-    padding: 0px 30px;
+    padding: 30px 0px 0;
     margin: 0 auto 10px;
-    background-color: hsla(0, 50%, 100%, 1);
+    background-color: hsla(0, 50%, 100%, 0.5);
+    box-shadow: 0 4px 12px hsla(0, 0%, 0%, 0.15);
     border: 2px solid hsla(0, 0%, 100%, 1);
     border-radius: 5px;
-    z-index: 9999;
+    backdrop-filter: blur(12px);
+    z-index: 100;
 }
 
 .selectedClose{
@@ -200,8 +271,18 @@ input::placeholder{
     overflow-y: auto;
 }
 
+.searchListTitle{
+    color:hsl(0, 0%, 10%);
+    font-size: rem(13px);
+    font-weight: 800;
+    text-align: center;
+    text-transform: uppercase;
+    opacity: 0.45;
+    // margin-top: 40px;
+}
+
 .caretWrapper{
-    color:#335C6E;
+    color:hsl(198, 37%, 32%);
     margin-top: 5px;
 }
 
@@ -228,7 +309,15 @@ input::placeholder{
 
 .addBox,
 .removeBox{
-    border-radius: 4px 4px 0 0;
+    border-radius: 6px 6px 0 0;
+}
+
+.addRemoveBtn{
+    display: flex;
+    align-content: center;
+    justify-content: center;
+    width: 100%;
+    cursor: pointer;
 }
 
 .addBox{
@@ -236,7 +325,7 @@ input::placeholder{
     align-content: center;
     justify-content: center;
     background: hsla(90, 80%, 35%, 0);
-    border: 1px solid hsla(90, 80%, 35%, 0.2);
+    border: 1px solid hsla(90, 80%, 35%, 0.25);
     color: hsla(90, 80%, 35%, 1);
     margin-top: rem(20px);
     width: 100%;
@@ -276,6 +365,12 @@ input::placeholder{
 
 .removeTxtSelected{
     padding: 10px 20px;
+    transition: all 300ms ease-in-out;
+}
+
+.removeTxtSelected:hover{
+    color: hsla(0, 100%, 40%, 1);
+    transition: all 300ms ease-in-out;
 }
 
 .footerTxt{
@@ -289,6 +384,13 @@ input::placeholder{
 
 
 /* Responsive--------------------------------------------------------------------------------------------*/
+@media only screen and (max-width: 1600px) {
+    .selectedBooksWrapper{
+        width: 70%;
+    }
+}
+
+
 @media only screen and (max-width: 1280px) {
     .searchContainer{
         width: 60% !important;
@@ -299,6 +401,19 @@ input::placeholder{
         margin-top: rem(15px);
         height: rem(60px);
     }
+
+    .selectedBooksWrapper{
+        width: 80%;
+    }
+}
+
+@media only screen and (max-width: 900px) {
+    .searchContainer{
+        width: 75% !important;
+    }
+    .selectedBooksWrapper{
+        width: 75%;
+    }
 }
 
 
@@ -306,14 +421,18 @@ input::placeholder{
     .searchContainer{
         width: 75% !important;
     }
+    .selectedBooksWrapper{
+        width: 70%;
+    }
 }
 
 
-@media only screen and (max-width: 600px) {
+@media only screen and (max-width: 640px) {
+    
     .searchContainer{
-        width: 85% !important;
+        width: 95% !important;
     }
-
+    
     input,
     input::placeholder{
         font-size: rem(13px);
@@ -335,6 +454,10 @@ input::placeholder{
         font-size: rem(11px);
         margin-top: rem(15px);
         height: rem(60px);
+    }
+
+    .selectedBooksWrapper{
+        width: 90%;
     }
     
     .bookTitle{
@@ -364,11 +487,20 @@ input::placeholder{
 
 
   @media only screen and (max-width: 400px) {
+    input,
+    input::placeholder{
+        font-size: rem(12px);
+    }
+
     .navStyleItem{
         font-size: rem(10px) !important;
     }
 
     .searchContainer{
         width: 90% !important;
+    }
+
+    .selectedBooksWrapper{
+        width: 80%;
     }
   }

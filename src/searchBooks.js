@@ -1,14 +1,12 @@
 import React, { useEffect, useRef, useState } from 'react';
 import { useQuery, gql, ApolloProvider } from '@apollo/client';
 import client from './apolloClient';
-import { Button, TextField, InputAdornment } from '@mui/material';
+import { Button, TextField, InputAdornment, List, ListItem, ListItemText, Paper } from '@mui/material';
 import Grid from '@material-ui/core/Grid';
 import { Box } from "@mui/material";
 import { PiCaretDownDuotone } from "react-icons/pi";
 import { RiSearch2Line } from "react-icons/ri";
 import { AiOutlinePlus, AiOutlineMinus } from "react-icons/ai";
-
-// import { RiSearch2Line } from "react-icons/ri";
 
 const BOOKS_QUERY = gql`
   query Books {
@@ -21,12 +19,16 @@ const BOOKS_QUERY = gql`
   }
 `;
 
-const SearchBooks = () => {
+const SearchBooksWithButton = () => {
     const [searchTerm, setSearchTerm] = useState('');
     const { loading, error, data } = useQuery(BOOKS_QUERY);
     const [selectedBooks, setSelectedBooks] = useState([]);
     const [openPopup, setOpenPopup] = useState(true);
+    const [showResults, setShowResults] = useState(false);
+    const [liveSearch, setLiveSearch] = useState(false);
+    const [filteredBooks, setFilteredBooks] = useState([]);
     const selectedBooksRef = useRef(null);
+    const liveSearchRef = useRef(null);
 
     useEffect(() => {
         const storedSelectedBooks = JSON.parse(localStorage.getItem('selectedBooks'));
@@ -37,10 +39,15 @@ const SearchBooks = () => {
         }
     }, []);
 
-    const filteredBooks = data?.books?.filter((book) =>
-        book.title.toLowerCase().includes(searchTerm.toLowerCase()) ||
-        book.author.toLowerCase().includes(searchTerm.toLowerCase())
-    );
+    useEffect(() => {
+        if (data) {
+            const results = data.books.filter((book) =>
+                book.title.toLowerCase().includes(searchTerm.toLowerCase()) ||
+                book.author.toLowerCase().includes(searchTerm.toLowerCase())
+            );
+            setFilteredBooks(results);
+        }
+    }, [searchTerm, data]);
 
     const addToSelectedBooks = (book) => {
         setSelectedBooks((prevSelectedBooks) => {
@@ -65,8 +72,40 @@ const SearchBooks = () => {
     const scrollToSelectedBooks = () => {
         if (selectedBooksRef.current) {
             setOpenPopup(false);
-            selectedBooksRef.current.scrollIntoView({ behavior: 'smooth', block: 'start' });
+            const offset = -10; // Offset value
+            const scrollToPosition = selectedBooksRef.current.offsetTop + offset;
+            window.scrollTo({ top: scrollToPosition, behavior: 'smooth' });
         }
+    };
+
+    useEffect(() => {
+        const handleClickOutside = (event) => {
+            if (liveSearchRef.current && !liveSearchRef.current.contains(event.target)) {
+                setLiveSearch(false);
+            }
+        };
+
+        document.addEventListener("mousedown", handleClickOutside);
+
+        return () => {
+            document.removeEventListener("mousedown", handleClickOutside);
+        };
+    }, []);
+
+    const handleSearch = () => {
+        setShowResults(true);
+    };
+
+    const handleKeyPress = (e) => {
+        if (e.key === 'Enter') {
+            handleSearch();
+        }
+    };
+
+    const handleListItemClick = (book) => {
+        setSearchTerm(book.title);
+        handleSearch();
+        setLiveSearch(false)
     };
 
     return (
@@ -108,16 +147,19 @@ const SearchBooks = () => {
                     <Grid container
                         spacing={2}
                         justifyContent='center'
-                        style={{
-                            width: '70%',
-                        }}>
-                        <Grid item xs={12} md={8} xl={7}>
+                        className='searchContainer'
+                    >
+                        <Grid item xs={12}>
                             <TextField
                                 type="text"
                                 variant='standard'
                                 placeholder="Search for book or author"
                                 value={searchTerm}
                                 onChange={(e) => setSearchTerm(e.target.value)}
+                                onKeyPress={handleKeyPress}
+                                onClick={() => {
+                                    setLiveSearch(true)
+                                }}
                                 InputProps={{
                                     disableUnderline: true,
                                     startAdornment: (
@@ -131,6 +173,7 @@ const SearchBooks = () => {
                                         </InputAdornment>
                                     ),
                                 }}
+                                className='fieldTxt'
                                 style={{
                                     padding: '10px',
                                     width: 'calc(100% - 25px)',
@@ -139,8 +182,28 @@ const SearchBooks = () => {
                                     borderRadius: '40px',
                                 }}
                             />
+                            {searchTerm && filteredBooks.length > 0 && (
+                                <div
+                                    ref={liveSearchRef}
+                                    className={`searchResultsWrapper ${liveSearch ? 'searchResultsOn' : 'searchResultsOff'}`}
+                                >
+                                    <div
+                                        className='searchResults'
+                                    >
+                                        <List>
+                                            {filteredBooks.map((book, index) => (
+                                                <ListItem key={index} button onClick={() => handleListItemClick(book)}>
+                                                    <ListItemText
+                                                        className='searchResultsTxt'
+                                                        primary={book.title} secondary={book.author} />
+                                                </ListItem>
+                                            ))}
+                                        </List>
+                                    </div>
+                                </div>
+                            )}
                         </Grid>
-                        <Grid item xs={12} md={8} xl={7}>
+                        <Grid item xs={12}>
                             <Button
                                 variant="standard"
                                 type="submit"
@@ -151,6 +214,7 @@ const SearchBooks = () => {
                                     color: '#fff',
                                     borderRadius: '40px',
                                 }}
+                                onClick={handleSearch}
                                 className='btnStyle'
                             >
                                 Search
@@ -167,7 +231,7 @@ const SearchBooks = () => {
                         <p>
                             Error: {error.message}
                         </p>}
-                    {searchTerm && !loading && !error && filteredBooks.length === 0 && (
+                    {showResults && searchTerm && !loading && !error && filteredBooks.length === 0 && (
                         <p
                             style={{
                                 textAlign: 'center',
@@ -192,52 +256,99 @@ const SearchBooks = () => {
                     <div
                         ref={selectedBooksRef}
                     />
-                    <Grid item
+                    <Box
+                        alignContent='center'
                         justifyContent='center'
-                        className='selectedBooksWrapper'
                     >
-                        {selectedBooks.map((book, index) => (
-                            <div key={index}
-                                className={`${openPopup ? 'selectedClose' : 'selectedOpen'}`}>
-                                <h2 className='bookTitle'>
-                                    {book.title}
-                                </h2>
-                                <p className='authorTxt'>
-                                    {book.author}
-                                </p>
-                                <p className='readingLvlTxt'>
-                                    Reading Level: <strong
-                                        style={{
-                                            fontWeight: 800
-                                        }}
-                                    >{book.readingLevel}</strong>
-                                </p>
-                                {selectedBooks.find((selectedBook) => selectedBook.title === book.title) ? (
-                                    <div
-                                        aria-label="Remove from list"
-                                        onClick={() => removeFromSelectedBooks(book.title)}
-                                        className='addRemoveBtn removeBtn'
+                        <Grid item
+                            justifyContent='center'
+                            className={`selectedBooksWrapper ${openPopup ? 'selectedBooksPaddingOff' : 'selectedBooksPaddingOn'}`}
+                        >
+                            <Grid
+                                container
+                                justifyContent='center'
+                                spacing={1}
+                            >
+                                {selectedBooks.map((book, index) => (
+                                    <Grid item xs={12} sm={12} md={6} xl={6}>
+                                        <div key={index}
+                                            className={`selectedListWidth ${openPopup ? 'selectedClose' : 'selectedOpen'}`}>
+                                            <div
+                                                className='selectedBooksList'
+                                            >
+                                                <img
+                                                    src={`${book.coverPhotoURL}`}
+                                                    alt={book.title}
+                                                    className='selectedImg'
+                                                    style={{
+                                                        border: '4px solid hsla(0,50%,100%,1)',
+                                                        borderRadius: '5px',
+                                                        boxShadow: '0 8px 12px hsla(0,50%,0%,0.1)',
+                                                        margin: '0 auto'
+                                                    }}
+                                                />
+                                                <div>
+                                                    <h2 className='bookTitle'
+                                                        style={{
+                                                            textAlign: 'center'
+                                                        }}
+                                                    >
+                                                        {book.title}
+                                                    </h2>
+                                                    <p className='authorTxt'
+                                                        style={{
+                                                            textAlign: 'center'
+                                                        }}
+                                                    >
+                                                        {book.author}
+                                                    </p>
+                                                    <p className='readingLvlTxt'
+                                                        style={{
+                                                            textAlign: 'center'
+                                                        }}
+                                                    >
+                                                        Reading Level: <strong
+                                                            style={{
+                                                                fontWeight: 800
+                                                            }}
+                                                        >{book.readingLevel}</strong>
+                                                    </p>
+                                                </div>
+                                            </div>
 
-                                    >
-                                        {/* <AiOutlineMinus /> */}
-                                        <p className='addRemoveTxt removeTxtSelected'
-                                            style={{
-                                                marginTop: '20px',
-                                                borderTop: '2px solid hsla(0,100%,50%,0.25)'
-                                            }}
-                                        >
-                                            Remove from List
-                                        </p>
-                                    </div>
-                                ) : (
-                                    null
-                                )}
-                            </div>
-                        ))}
-                    </Grid>
+                                            {selectedBooks.find((selectedBook) => selectedBook.title === book.title) ? (
+                                                <div
+                                                    aria-label="Remove from list"
+                                                    onClick={() => removeFromSelectedBooks(book.title)}
+                                                    className='addRemoveBtn removeBtn'
+
+                                                >
+                                                    <p className='addRemoveTxt removeTxtSelected'
+                                                        style={{
+                                                            // marginTop: '20px',
+                                                            borderTop: '2px solid hsla(0,100%,50%,0.5)'
+                                                        }}
+                                                    >
+                                                        Remove from List
+                                                    </p>
+                                                </div>
+                                            ) : (
+                                                null
+                                            )}
+                                        </div>
+                                    </Grid>
+                                ))}
+                            </Grid>
+                        </Grid>
+                    </Box>
                 </Grid>
-                {!loading && !error && filteredBooks.length > 0 && (
+                {showResults && !loading && !error && filteredBooks.length > 0 && (
                     <div>
+                        <h3
+                            className='searchListTitle'
+                        >
+                            Search Results
+                        </h3>
                         <Grid container
                             spacing={2}
                             justifyContent='center'
@@ -290,14 +401,13 @@ const SearchBooks = () => {
                                                 >{book.readingLevel}</strong>
                                             </p>
                                             <div className='addRemoveWrapper'>
-                                                {selectedBooks.find((selectedBook) => selectedBook.title === book.title) ? (
+                                                {selectedBooks.find((selectedBook) => selectedBook.title === book.title && selectedBook.author === book.author) ? (
                                                     <div className='removeBox'>
                                                         <Box
                                                             aria-label="Remove from list"
                                                             onClick={() => removeFromSelectedBooks(book.title)}
                                                             className='addRemoveBtn removeBtn'
                                                         >
-
                                                             <p className='addRemoveTxt'>
                                                                 <AiOutlineMinus
                                                                     style={{
@@ -315,7 +425,6 @@ const SearchBooks = () => {
                                                             onClick={() => addToSelectedBooks(book)}
                                                             className='addRemoveBtn addBtn'
                                                         >
-
                                                             <p className='addRemoveTxt'>
                                                                 <AiOutlinePlus
                                                                     style={{
@@ -328,6 +437,7 @@ const SearchBooks = () => {
                                                     </div>
                                                 )}
                                             </div>
+
                                             <button
                                                 className='viewSelectBtnBox'
                                                 onClick={scrollToSelectedBooks}
@@ -335,17 +445,15 @@ const SearchBooks = () => {
                                                 View Selected Books
                                             </button>
                                         </div>
-
                                     </Box>
-
                                 </Grid>
                             ))}
                         </Grid>
                     </div>
                 )}
             </div>
-        </ApolloProvider>
+        </ApolloProvider >
     );
 };
 
-export default SearchBooks;
+export default SearchBooksWithButton;

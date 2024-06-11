@@ -14,7 +14,7 @@ const Nav = () => {
             className='navStyle'
             style={{
                 height: '80px',
-                marginBottom: '15px',
+                // marginBottom: '15px',
                 padding: '0 15px'
             }}
         >
@@ -22,7 +22,7 @@ const Nav = () => {
                 // display="flex"
                 // alignContent="center"
                 style={{
-                    width: '30%',
+                    width: '100%',
                 }}
             >
                 <a
@@ -38,7 +38,7 @@ const Nav = () => {
                     />
                 </a>
             </Box>
-            <Box
+            {/* <Box
                 display="flex"
                 alignContent="center"
                 justifyContent="flex-end"
@@ -65,7 +65,7 @@ const Nav = () => {
                 >
                     Search Button
                 </Button>
-            </Box>
+            </Box> */}
         </Grid>
     );
 };
