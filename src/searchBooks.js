@@ -1,7 +1,7 @@
 import React, { useEffect, useRef, useState } from 'react';
 import { useQuery, gql, ApolloProvider } from '@apollo/client';
 import client from './apolloClient';
-import { Button, TextField, InputAdornment, List, ListItem, ListItemText, Paper } from '@mui/material';
+import { Button, TextField, InputAdornment, List, ListItem, ListItemText } from '@mui/material';
 import Grid from '@material-ui/core/Grid';
 import { Box } from "@mui/material";
 import { PiCaretDownDuotone } from "react-icons/pi";
@@ -30,6 +30,7 @@ const SearchBooksWithButton = () => {
     const selectedBooksRef = useRef(null);
     const liveSearchRef = useRef(null);
 
+    // check for any selected books on load
     useEffect(() => {
         const storedSelectedBooks = JSON.parse(localStorage.getItem('selectedBooks'));
         if (storedSelectedBooks) {
@@ -39,6 +40,7 @@ const SearchBooksWithButton = () => {
         }
     }, []);
 
+    //search for books by title or author in graphql
     useEffect(() => {
         if (data) {
             const results = data.books.filter((book) =>
@@ -49,6 +51,7 @@ const SearchBooksWithButton = () => {
         }
     }, [searchTerm, data]);
 
+    // add to selected books array and store in localstorage
     const addToSelectedBooks = (book) => {
         setSelectedBooks((prevSelectedBooks) => {
             const updatedSelectedBooks = [...prevSelectedBooks, book];
@@ -57,6 +60,7 @@ const SearchBooksWithButton = () => {
         });
     };
 
+    // remove from selected books array and remove from localstorage
     const removeFromSelectedBooks = (bookTitle) => {
         setSelectedBooks((prevSelectedBooks) => {
             const updatedSelectedBooks = prevSelectedBooks.filter((book) => book.title !== bookTitle);
@@ -65,10 +69,13 @@ const SearchBooksWithButton = () => {
         });
     };
 
+    // selected list popup function
     const togglePopup = () => {
         setOpenPopup((prevPopupState) => !prevPopupState);
     };
 
+
+    // Scroll to selected list from view button inside book list
     const scrollToSelectedBooks = () => {
         if (selectedBooksRef.current) {
             setOpenPopup(false);
@@ -78,6 +85,7 @@ const SearchBooksWithButton = () => {
         }
     };
 
+    // close liveSearch with outside click
     useEffect(() => {
         const handleClickOutside = (event) => {
             if (liveSearchRef.current && !liveSearchRef.current.contains(event.target)) {
@@ -92,16 +100,21 @@ const SearchBooksWithButton = () => {
         };
     }, []);
 
+    // show results of search when button pressed
     const handleSearch = () => {
         setShowResults(true);
+        setLiveSearch(false)
     };
 
+    // show results of search when user presses enter
     const handleKeyPress = (e) => {
         if (e.key === 'Enter') {
             handleSearch();
+            setLiveSearch(false)
         }
     };
 
+    // show results from selected livesearch book
     const handleListItemClick = (book) => {
         setSearchTerm(book.title);
         handleSearch();
@@ -123,6 +136,7 @@ const SearchBooksWithButton = () => {
                     <a
                         href='https://www.ello.com/'
                         target='_blank'
+                        rel='noreferrer'
                         style={{
                             width: '120px',
                             height: 'auto',

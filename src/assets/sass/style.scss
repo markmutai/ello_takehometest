@@ -87,7 +87,6 @@ input::placeholder{
 }
 
 .searchResultsWrapper{
-    // display: hidden;
     position: relative;
     z-index: 9999 !important;
     font-family: "Mulish", sans-serif !important;
@@ -219,8 +218,6 @@ input::placeholder{
     padding-bottom: 0px;
     width: 100%;
     margin: 0 auto !important;
-    // background-color: #335C6E;
-    // z-index: 9999;
 }
 
 .selectedBooksPaddingOn{
