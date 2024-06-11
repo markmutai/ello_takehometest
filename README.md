@@ -1,3 +1,15 @@
+Written in ReactJS and MaterialUI as per request. I've used Gulp with the workflow to help generate favicons, metadata and create a minified CSS from Sass. I also used Affinity Designer to help recreate parts of the company logo that I wasn't able to find in svg format
+
+The useState hook creates the variable "searchTerm" and a function "setSearchTearm" to update the value the user has typed into the input field. The live search updates while the user typing with an onChange event handler that updates the "searchTerm". 
+
+The useQuery hook to fetch data from GraphQL Server using Books Query that return:
+Loading, if the query is in progress
+Error, if the query fails
+Data, the data returned if the query is successful
+
+The data is then filtered and checks what matches in the either the titles, authors or both, that matches the user's query
+
+When the list shows, the user can choose to add or remove the book they'd like, which updates a useState array "selectedBooks", and is also stored in a localstorage key that useEffect checks when the page loads in order to save what they've added from the previous session.
 Ello Take Home Challenge Screenshots:
 
 Large Screen
