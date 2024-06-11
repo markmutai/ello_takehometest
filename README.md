@@ -12,6 +12,8 @@ The data is then filtered and checks what matches in the either the titles, auth
 When the list shows, the user can choose to add or remove the book they'd like, which updates a useState array "selectedBooks", and is also stored in a localstorage key that useEffect checks when the page loads in order to save what they've added from the previous session.
 Ello Take Home Challenge Screenshots:
 
+--------------------------------------
+
 
 Large Screenshot:
 
